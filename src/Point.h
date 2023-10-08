@@ -24,6 +24,18 @@ public:
 
     const T& operator[](size_t i) const { return x[i]; }
 
+    Point<T, Container> operator-()
+    {
+        std::for_each(begin(), end(), [](T& p)
+        {
+            p = p * (-1);
+        });
+
+        return *this;
+    }
+
+    void printPoint() const;
+
     template <typename V, class Container_>
     friend Point<V, Container_> operator+(const Point<V, Container_>& p1, const Point<V, Container_>& p2);
     template <typename V, class Container_>
@@ -79,4 +91,15 @@ template <typename T, class Container>
 Point<T, Container> operator*(const Point<T, Container>& p, const T& alpha)
 {
     return alpha * p;
+}
+
+template <typename T, class Container>
+void Point<T, Container>::printPoint() const
+{
+    for_each(begin(), end(), [](const auto& a)
+    {
+        std::cout << a << " ";
+    });
+
+    std::cout << "\n";
 }

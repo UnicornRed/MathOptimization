@@ -5,7 +5,7 @@
 # Compiler settings - Can be customized.
 CC = g++
 CXXFLAGS = -std=c++20 -Wall
-LDFLAGS = 
+LDFLAGS = -lncurses
 
 # Makefile settings - Can be customized.
 APPNAME = Optim

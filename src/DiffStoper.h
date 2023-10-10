@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "Optimization.h"
 #include "Point.h"
 
 template <typename T>
@@ -28,7 +29,7 @@ private:
     size_t maxStep;
     T epsilon;
 public:
-    AbsStop(std::function<T(Point<T>)> _f, size_t _maxStep = 100, T _epsilon = 0.001)
+    AbsStop(std::function<T(const Point<T>)> _f, size_t _maxStep = 100, T _epsilon = 0.001)
         : f(_f), maxStep(_maxStep), epsilon(_epsilon) {};
 
     bool condition(const std::vector<Point<T>>& pathway) const override;

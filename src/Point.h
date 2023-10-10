@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 #include <vector>
 
 template <typename T, class Container = std::vector<T>>
@@ -24,17 +25,19 @@ public:
 
     const T& operator[](size_t i) const { return x[i]; }
 
-    Point<T, Container> operator-()
+    Point<T, Container> operator-() const 
     {
-        std::for_each(begin(), end(), [](T& p)
+        Point<T, Container> res(*this);
+
+        std::for_each(res.begin(), res.end(), [](T& p)
         {
             p = p * (-1);
         });
 
-        return *this;
+        return res;
     }
 
-    void printPoint() const;
+    std::string printPoint(std::string format) const;
 
     template <typename V, class Container_>
     friend Point<V, Container_> operator+(const Point<V, Container_>& p1, const Point<V, Container_>& p2);
@@ -94,12 +97,16 @@ Point<T, Container> operator*(const Point<T, Container>& p, const T& alpha)
 }
 
 template <typename T, class Container>
-void Point<T, Container>::printPoint() const
+std::string Point<T, Container>::printPoint(std::string format) const
 {
-    for_each(begin(), end(), [](const auto& a)
+    char help[100];
+    std::string res = "";
+
+    for_each(begin(), end(), [&help, &res, format](const auto& a)
     {
-        std::cout << a << " ";
+        sprintf(help, format.c_str(), a);
+        res += std::string(help) + " ";
     });
 
-    std::cout << "\n";
+    return res;
 }

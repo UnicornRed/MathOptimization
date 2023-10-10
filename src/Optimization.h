@@ -18,6 +18,8 @@ public:
     GeneralStop() {};
 
     virtual bool condition(const std::vector<Point<T>>& pathway) const = 0;
+
+    virtual ~GeneralStop() {}
 };
 
 template <typename T>
@@ -49,6 +51,8 @@ public:
 
     inline const std::vector<Point<T>> getPathway() const { return pathway; }
     inline const T getValueLastPoint() const { return f(pathway.back()); }
+
+    virtual ~Optimization() {}
 };
 
 template <typename T>
@@ -63,6 +67,8 @@ void Optimization<T>::SetArea(const Point<T>& _min, const Point<T>& _max)
 {
     area.minArea = _min;
     area.maxArea = _max;
+
+    pathway.clear();
 }
 
 template <typename T>
@@ -113,6 +119,9 @@ T DetermOptimization<T>::OneDimensionalOptim(const T& argMin, const T& argMax, T
 #ifdef DEBUG
     std::cout << "ArgMax: " << argMax << std::endl;
 #endif
+    if (argMin == argMax)
+        return argMin;
+
     enum Edge { left, right, nothing } lastEdge;
     T valueLeft, valueRight, leftEdge, rightEdge, leftSetEdge, rightSetEdge, minValue = oneF(argMin), middle, value;
     T epsilonOne = this->epsilon * (argMax - argMin), epsilonStepOne = epsilonStep * (argMax - argMin);

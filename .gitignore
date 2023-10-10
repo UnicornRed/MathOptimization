@@ -5,3 +5,6 @@
 Optim
 Point.d
 Optim
+CursesOptim.d
+.gitignore
+MathFunc.d

@@ -4,6 +4,7 @@
 
 #include "DiffStoper.h"
 #include "OptMethod.h"
+#include "GUI_Optim.h"
 
 int main()
 {
@@ -29,6 +30,8 @@ int main()
 
     std::cout << MyDetOpt.getValueLastPoint() << std::endl;
     std::cout << MyDetOpt.getPathway().back() << std::endl;
+
+    test();
 #else
     CursesOptim MyCO(f);
 

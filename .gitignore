@@ -9,3 +9,7 @@ CursesOptim.d
 .gitignore
 MathFunc.d
 GUI_Optim.d
+.qmake.stash
+*.o
+Makefile.back
+Optim.pro

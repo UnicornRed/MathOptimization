@@ -8,3 +8,4 @@ Optim
 CursesOptim.d
 .gitignore
 MathFunc.d
+GUI_Optim.d

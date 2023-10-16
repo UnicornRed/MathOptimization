@@ -12,8 +12,7 @@ using T = double;
 struct FunctionData
 {
     std::string name;
-    std::function<T(const Point<T>&)> f;
-    std::function<Point<T>(const Point<T>&)> gradF;
+    GeneralFunction<T>& f;
     Point<T> minArea;
     Point<T> maxArea;
     Point<T> start;
@@ -47,8 +46,7 @@ private:
         T delta;
         T alpha;
         GeneralStop<T>* stoper;
-        std::function<T(const Point<T>&)> f;
-        std::function<Point<T>(const Point<T>&)> fGrad;
+        GeneralFunction<T>* f;
         Optimization<T>* Opt;
         WindowParam wp;
         int numF;
@@ -60,6 +58,7 @@ private:
 
     std::vector<FunctionData> f;
     std::vector<WindowParam*> allWin;
+    std::mt19937 generator;
     WindowParam MyWin, MyMenu, MyResult, MyFunction;
 
     void PrintHeading(const WindowParam& wp);
@@ -68,7 +67,7 @@ private:
 
     void PrintAllWin(std::vector<WindowParam*>& wpAll);
 
-    void PrintFunction(WindowParam& Function, const Point<T>& min, const Point<T>& max, const Point<T>& res, const std::function<T(const Point<T>&)> f);
+    void PrintFunction(WindowParam& Function, const Point<T>& min, const Point<T>& max, const Point<T>& res, const GeneralFunction<T>& f);
 
     void PrintResult(WindowParam& Result, const Optimization<T>& Opt);
 

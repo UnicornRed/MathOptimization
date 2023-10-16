@@ -46,12 +46,12 @@ public:
 };
 
 template <typename T, class Container>
-double operator*(const Point<T, Container>& p1, const Point<T, Container>& p2)
+T operator*(const Point<T, Container>& p1, const Point<T, Container>& p2)
 {
     if (p1.size() != p2.size())
         throw std::out_of_range("The dimensions of the points are not equal.");
 
-    double res = 0;
+    T res{};
     
     for (size_t i{0}; i < p1.size(); ++i)
         res += p1[i] * p2[i];
@@ -109,4 +109,15 @@ std::string Point<T, Container>::printPoint(std::string format) const
     });
 
     return res;
+}
+
+template <typename T, class Container>
+std::ostream& operator<<(std::ostream& out, const Point<T, Container>& p)
+{
+    for_each(p.begin(), p.end(), [&out, &p](const auto& a)
+    {
+        out << a << " ";
+    });
+
+    return out;
 }

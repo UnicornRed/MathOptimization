@@ -1,12 +1,13 @@
-#include <vector>
 #include <chrono>
 #include "DiffStoper.h"
+#include "OptMethod.h"
 #include "CursesOptim.h"
 
 #define EPSILON 1e-6;
 #define formatT "%f"
 
-CursesOptim::CursesOptim(std::vector<FunctionData>& _f) : f(_f)
+CursesOptim::CursesOptim(std::vector<FunctionData>& _f) : f(_f),
+                                                          generator(std::chrono::system_clock::now().time_since_epoch().count())
 {
     int raw, col;
 
@@ -33,10 +34,8 @@ CursesOptim::CursesOptim(std::vector<FunctionData>& _f) : f(_f)
 
     PrintAllWin(allWin);
 
-    size_t seed = std::chrono::system_clock::now().time_since_epoch().count();
-    MyMenuParam = {MenuParam::Function, false, numIter, epsilon, epsilonStep, seed, Point<T>({-1.0, -1.0}), Point<T>({1.0, 1.0}),
-                   Point<T>({0.5, 0.5}), prob, delta, alpha, nullptr, f[0].f,
-                   f[0].gradF, nullptr, MyMenu, 0, 0, 0, 0, int(f.size())};
+    MyMenuParam = {MenuParam::Function, false, numIter, epsilon, epsilonStep, generator(), Point<T>({-1.0, -1.0}), Point<T>({1.0, 1.0}),
+                   Point<T>({0.5, 0.5}), prob, delta, alpha, nullptr, &f[0].f, nullptr, MyMenu, 0, 0, 0, 0, int(f.size())};
 }
 
 CursesOptim::~CursesOptim()
@@ -74,7 +73,7 @@ void CursesOptim::PrintAllWin(std::vector<WindowParam*>& wpAll)
             PrintWindow(*i);
 }
 
-void CursesOptim::PrintFunction(WindowParam& Function, const Point<T>& min, const Point<T>& max, const Point<T>& res, const std::function<T(const Point<T>&)> f)
+void CursesOptim::PrintFunction(WindowParam& Function, const Point<T>& min, const Point<T>& max, const Point<T>& res, const GeneralFunction<T>& f)
 {
     PrintWindow(Function);
 
@@ -87,14 +86,14 @@ void CursesOptim::PrintFunction(WindowParam& Function, const Point<T>& min, cons
     }
 
     Point<T> width = max + (-min);
-    T maxValue = f(Point<T>({min[0] + width[0] * (1.0 / (Function.col - 2)), min[1] + width[1] * (1.0 / (Function.raw - 2))}));
+    T maxValue = f.Value(Point<T>({min[0] + width[0] * (1.0 / (Function.col - 2)), min[1] + width[1] * (1.0 / (Function.raw - 2))}));
     T minValue = maxValue, value;
 
     for (int i{1}; i <= (Function.col - 2); ++i)
     {
         for (int j{1}; j <= (Function.raw - 2); ++j)
         {
-            value = f(Point<T>({min[0] + width[0] * (T(i) / (Function.col - 2)), min[1] + width[1] * (T(j) / (Function.raw - 2))}));
+            value = f.Value(Point<T>({min[0] + width[0] * (T(i) / (Function.col - 2)), min[1] + width[1] * (T(j) / (Function.raw - 2))}));
 
             maxValue = std::max(maxValue, value);
             minValue = std::min(minValue, value); 
@@ -113,8 +112,9 @@ void CursesOptim::PrintFunction(WindowParam& Function, const Point<T>& min, cons
                 std::abs(min[1] + width[1] * (T(j) / (Function.raw - 2)) - res[1]) < width[1] * (T(1) / (Function.raw - 2)) / 2)
                 MARKER = A_REVERSE;
 
-            value = f(Point<T>({min[0] + width[0] * (T(i) / (Function.col - 2)), min[1] + width[1] * (T(j) / (Function.raw - 2))}));
-            mvwaddch(Function.win, Function.raw - 1 - j, i, int(65 + (value - minValue) / (maxValue - minValue) * 26) | MARKER);
+            value = f.Value(Point<T>({min[0] + width[0] * (T(i) / (Function.col - 2)), min[1] + width[1] * (T(j) / (Function.raw - 2))}));
+            int letter = int((value - minValue) / (maxValue - minValue) * 52);
+            mvwaddch(Function.win, Function.raw - 1 - j, i, (letter % 2 ? 'A' + letter / 2 : 'a' + letter / 2) | MARKER);
         }
     }
 
@@ -158,12 +158,12 @@ void CursesOptim::ScanSizeTOption(int y, int x, int numOption, int valueOption, 
         mvwprintw(Menu.win, y, x + 10, "%lu", sizeTParam);
 }
 
-void CursesOptim::ScanDoubleOption(int y, int x, int numOption, int valueOption, double& doubleParam, const WindowParam& Menu, bool newparam)
+void CursesOptim::ScanDoubleOption(int y, int x, int numOption, int valueOption, T& doubleParam, const WindowParam& Menu, bool newparam)
 {
     if (valueOption == numOption && newparam)
         mvwscanw(Menu.win, y, x + 10, "%lf", &doubleParam);
     else
-        mvwprintw(Menu.win, y, x + 10, "%6.4f", doubleParam);
+        mvwprintw(Menu.win, y, x + 10, "%-6g", doubleParam);
 }
 
 void CursesOptim::ScanPointOption(int y, int x, int numOption, int valueOption, Point<T>& pointParam, const WindowParam& Menu, bool newparam)
@@ -181,7 +181,28 @@ void CursesOptim::PrintMenu(WindowParam& Menu, bool newparam)
     echo();
     PrintWindow(Menu);
 
-    int y = 1, x = 1;
+    int y = Menu.raw - 2, x = 1;
+
+    mvwprintw(Menu.win, y, x, "'q' - quit program");
+    mvwprintw(Menu.win, --y, x, "'r' - start optimization");
+
+    if (!MyMenuParam.choose)
+        mvwprintw(Menu.win, --y, x, "key right - choose option");
+    else
+    {
+        mvwprintw(Menu.win, --y, x, "key left - cancel option");
+
+        if (MyMenuParam.condition == MenuParam::Param)
+        {
+            if (newparam)
+                mvwprintw(Menu.win, --y, x, "ENTER - input parameter");
+            else
+                mvwprintw(Menu.win, --y, x, "'n' - new parameter");
+        }
+    }
+
+    y = 1;
+
     PrintCondition(y, x, MenuParam::Function, MyMenuParam, Menu, "Functions");
 
     for (int i{}; i < int(f.size()); ++i)
@@ -217,7 +238,6 @@ void CursesOptim::PrintMenu(WindowParam& Menu, bool newparam)
         PrintOption(++y, x, MyMenuParam.numParam, 9, MyMenuParam, Menu, "Alpha");
         ScanDoubleOption(y, x, MyMenuParam.numParam, 9, MyMenuParam.alpha, Menu, newparam);
 
-    
     noecho();
     wrefresh(Menu.win);
 }
@@ -292,27 +312,28 @@ void CursesOptim::main_loop()
 
             break;
         case 'r':
-            MyMenuParam.f = f[MyMenuParam.numF].f;
-            MyMenuParam.fGrad = f[MyMenuParam.numF].gradF;
+            MyMenuParam.f = &f[MyMenuParam.numF].f;
 
             if (MyMenuParam.numStoper == 0)
                 MyMenuParam.stoper = new NumStop<T>(MyMenuParam.numIter);
             if (MyMenuParam.numStoper == 1)
-                MyMenuParam.stoper = new AbsStop<T>(MyMenuParam.f, MyMenuParam.numIter, MyMenuParam.epsilon);
+                MyMenuParam.stoper = new AbsStop<T>(*MyMenuParam.f, MyMenuParam.numIter, MyMenuParam.epsilon);
 
             if (MyMenuParam.numMethod == 0)
-                MyMenuParam.Opt = new DetermOptimization<T>(MyMenuParam.f, MyMenuParam.fGrad, *MyMenuParam.stoper, MyMenuParam.epsilon, MyMenuParam.epsilonStep);
+                MyMenuParam.Opt = new DetermOptimization<T>(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.epsilon, MyMenuParam.epsilonStep);
             if (MyMenuParam.numMethod == 1)
-                MyMenuParam.Opt = new StochastOptimization<T>(MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.prob, MyMenuParam.delta, MyMenuParam.seed, MyMenuParam.alpha);
+                MyMenuParam.Opt = new StochastOptimization<T>(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.prob, MyMenuParam.delta, MyMenuParam.seed, MyMenuParam.alpha);
  
             MyMenuParam.Opt->SetArea(MyMenuParam.minArea, MyMenuParam.maxArea);
             MyMenuParam.Opt->DoOptimize(MyMenuParam.start);
 
             PrintResult(MyResult, *MyMenuParam.Opt);
-            PrintFunction(MyFunction, MyMenuParam.minArea, MyMenuParam.maxArea, MyMenuParam.Opt->getPathway().back(), MyMenuParam.f);
+            PrintFunction(MyFunction, MyMenuParam.minArea, MyMenuParam.maxArea, MyMenuParam.Opt->getPathway().back(), *MyMenuParam.f);
 
             delete MyMenuParam.stoper;
             delete MyMenuParam.Opt;
+
+            MyMenuParam.seed = generator();
 
             break;
         case 'q':

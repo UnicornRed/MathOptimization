@@ -2,7 +2,6 @@
 
 #include <vector>
 #include "Optimization.h"
-#include "Point.h"
 
 template <typename T>
 class NumStop : public GeneralStop<T>
@@ -25,11 +24,11 @@ template <typename T>
 class AbsStop : public GeneralStop<T>
 {
 private:
-    std::function<T(const Point<T>&)> f;
+    GeneralFunction<T>& f;
     size_t maxStep;
     T epsilon;
 public:
-    AbsStop(std::function<T(const Point<T>)> _f, size_t _maxStep = 100, T _epsilon = 0.001)
+    AbsStop(GeneralFunction<T>& _f, size_t _maxStep = 100, T _epsilon = 0.001)
         : f(_f), maxStep(_maxStep), epsilon(_epsilon) {};
 
     bool condition(const std::vector<Point<T>>& pathway) const override;
@@ -43,9 +42,9 @@ bool AbsStop<T>::condition(const std::vector<Point<T>>& pathway) const
 
     for (auto it = pathway.rbegin() + 1; it < pathway.rend(); ++it)
     {
-        if (f(pathway.back()) < f(*it))
+        if (f.Value(pathway.back()) < f.Value(*it))
         {
-            if (f(*it) - f(pathway.back()) < epsilon)
+            if (f.Value(*it) - f.Value(pathway.back()) < epsilon)
                 return false;
             else
                 return true;

@@ -77,7 +77,7 @@ private:
 
     void ScanSizeTOption(int y, int x, int numOption, int valueOption, size_t& sizeTParam, const WindowParam& Menu, bool newparam);
 
-    void ScanDoubleOption(int y, int x, int numOption, int valueOption, double& doubleParam, const WindowParam& Menu, bool newparam);
+    void ScanDoubleOption(int y, int x, int numOption, int valueOption, T& doubleParam, const WindowParam& Menu, bool newparam);
 
     void ScanPointOption(int y, int x, int numOption, int valueOption, Point<T>& pointParam, const WindowParam& Menu, bool newparam);
 

@@ -135,7 +135,11 @@ Point<T> DetermOptimization<T>::NextPoint(const Point<T>& p)
     });
 
     nextP = p + alpha * conjugateVector;
-    beta = (this->f.Gradient(nextP) * (this->f.Gradient(nextP) + (-this->f.Gradient(p)))) / (this->f.Gradient(p) * this->f.Gradient(p));
+    
+    if (this->f.Gradient(p) * this->f.Gradient(p))
+        beta = (this->f.Gradient(nextP) * (this->f.Gradient(nextP) + (-this->f.Gradient(p)))) / (this->f.Gradient(p) * this->f.Gradient(p));
+    else
+        beta = 0;
 
     conjugateVector = (-this->f.Gradient(nextP)) + beta * conjugateVector;
 

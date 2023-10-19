@@ -2,6 +2,8 @@
 #include <QLabel>
 #include <QWidget>
 
+#include "GUI_Optim.h"
+
 int test()
 {
     int argc = 1;

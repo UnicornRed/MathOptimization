@@ -1,6 +1,21 @@
 #include <cmath>
 #include "MathFunc.h"
 
+double F_2D::FuncNull::Value(const Point<double>& p) const
+{
+    return 0; 
+}
+
+Point<double> F_2D::FuncNull::Gradient(const Point<double>& p) const
+{
+    Point<double> res({0, 0});
+
+    res[0] = 0;
+    res[1] = 0;
+    
+    return res;
+}
+
 double F_2D::FuncRosenbrock::Value(const Point<double>& p) const
 {
     return (1 - p[0]) * (1 - p[0]) + (p[1] - p[0] * p[0]) * (p[1] - p[0] * p[0]); 

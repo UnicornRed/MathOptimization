@@ -2,6 +2,16 @@
 
 namespace F_2D
 {
+    class FuncNull : public GeneralFunction<double>
+    {
+    public:
+        FuncNull() = default;
+
+        double Value(const Point<double>& p) const override;
+
+        Point<double> Gradient(const Point<double>& p) const override;
+    };
+
     class FuncRosenbrock : public GeneralFunction<double>
     {
     public:

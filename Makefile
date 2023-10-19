@@ -40,7 +40,7 @@ DISTNAME      = Task11.0.0
 DISTDIR = /home/unicornred/All/study_materials/ПрогРешВерЗадач/Task1/.tmp/Task11.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1
-LIBS          = $(SUBLIBS) /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so -lGL -lpthread -lncurses
+LIBS          = $(SUBLIBS) /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so -lGL -lpthread -lncurses 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -387,7 +387,7 @@ CursesOptim.o: src/CursesOptim.cpp src/DiffStoper.h \
 		src/CursesOptim.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o CursesOptim.o src/CursesOptim.cpp
 
-GUI_Optim.o: src/GUI_Optim.cpp 
+GUI_Optim.o: src/GUI_Optim.cpp src/GUI_Optim.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GUI_Optim.o src/GUI_Optim.cpp
 
 MathFunc.o: src/MathFunc.cpp src/MathFunc.h \
@@ -400,7 +400,8 @@ Optim.o: src/Optim.cpp src/CursesOptim.h \
 		src/Optimization.h \
 		src/MathFunc.h \
 		src/DiffStoper.h \
-		src/OptMethod.h
+		src/OptMethod.h \
+		src/GUI_Optim.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Optim.o src/Optim.cpp
 
 ####### Install

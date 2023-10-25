@@ -13,3 +13,4 @@ GUI_Optim.d
 *.o
 Makefile.back
 Optim.pro
+doxygen

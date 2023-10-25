@@ -1,16 +1,25 @@
+/// @file
+/// @brief Realization of a multidimensional point.
+/// @details File contains the definition of class of a multidimensional point.
 #pragma once
 
 #include <iostream>
 #include <string>
 #include <vector>
 
+/// @brief Class of a multidimensional point.
+/// @tparam T Typename of a point's coordinate.
+/// @tparam Container Container for a storage of point's coordinate.
 template <typename T, class Container = std::vector<T>>
 class Point
 {
 private:
     Container x;
 public:
+    /// @brief Default constructor.
     Point() {};
+    /// @brief Constructor for multidimensional point.
+    /// @param _x Container which store of point's coordinate.
     Point(const Container& _x) : x(_x) {};
 
     auto begin() { return x.begin(); }

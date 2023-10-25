@@ -1,7 +1,12 @@
+/// @file
+/// @brief Realization of the Conjugate Vector Method and the Stochastic Method.
+/// @details File contains the definition of template classes of the Conjugate Vector Method and the Stochastic Method.
 #pragma once
 
 #include "Optimization.h"
 
+/// @brief Class of the Conjugate Vector Method.
+/// @tparam T Typename for a value of a function.
 template <typename T>
 class DetermOptimization : public Optimization<T>
 {
@@ -17,6 +22,11 @@ protected:
     Point<T> NextPoint(const Point<T>& point) override;
     void SetStart(const Point<T>& startPoint) override;
 public:
+    /// @brief Constructor of optimization of the Conjugate Vector Method.
+    /// @param[in] _f Function for optimization.
+    /// @param[in] _stopIteration Stopper for stoping.
+    /// @param[in] _epsilon Condition of stopping for one dimension optimization.
+    /// @param[in] _epsilonStep Step width in one dimension optimization.
     DetermOptimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _epsilon, const T& _epsilonStep);
 };
 
@@ -147,7 +157,8 @@ Point<T> DetermOptimization<T>::NextPoint(const Point<T>& p)
 }
 
 
-
+/// @brief Class of the Stochastic Method.
+/// @tparam T Typename for a value of a function.
 template <typename T>
 class StochastOptimization : public Optimization<T>
 {
@@ -166,15 +177,22 @@ protected:
     Point<T> NextPoint(const Point<T>& point) override;
     void SetStart(const Point<T>& startPoint) override;
 public:
-    StochastOptimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, T _probability, T _delta,
-                         size_t _seed = 0, T _alpha = static_cast<T>(1));
+    /// @brief Constructor of optimization of the Conjugate Vector Method.
+    /// @param[in] _f Function for optimization.
+    /// @param[in] _stopIteration Stopper for stoping.
+    /// @param[in] _probability Probability of throwing a point into the delta neighborhood.
+    /// @param[in] _delta Width of the delta neighborhood.
+    /// @param _seed Seed for a generator.
+    /// @param[in] _alpha Сoefficient of narrowing of the delta neighborhood.
+    StochastOptimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _probability, const T& _delta,
+                         size_t _seed = 0, const T& _alpha = static_cast<T>(1));
 };
 
 template <typename T>
-StochastOptimization<T>::StochastOptimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, T _probability, T _delta,
-                                              size_t _seed, T _alpha) : Optimization<T>(_f, _stopIteration), delta(_delta), deltaStart(_delta),
-                                                                        probability(_probability), alpha(_alpha), generator(_seed),
-                                                                        distr(static_cast<T>(0), static_cast<T>(1))
+StochastOptimization<T>::StochastOptimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _probability, const T& _delta,
+                                              size_t _seed, const T& _alpha) : Optimization<T>(_f, _stopIteration), delta(_delta), deltaStart(_delta),
+                                                                               probability(_probability), alpha(_alpha), generator(_seed),
+                                                                               distr(static_cast<T>(0), static_cast<T>(1))
 {
 
 }

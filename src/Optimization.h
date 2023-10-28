@@ -17,16 +17,18 @@
 #include "Point.h"
 
 #define PHI (1 + std::sqrt(5) / 2)
+#define MAXSTEP 100
 
 /// @brief Abstract class for stoppers.
 /// @tparam T Typename for a value of a function.
 template <typename T>
 class GeneralStop
 {
-private:
+protected:
+    size_t maxStep;
 public:
     /// @brief Default constructor.
-    GeneralStop() {};
+    GeneralStop(size_t _maxStep = MAXSTEP) : maxStep(_maxStep) {};
 
     /// @brief Function of a condition for stoping.
     /// @param[in] pathway Pathway of a optimization.
@@ -74,14 +76,15 @@ template <typename T>
 class Optimization
 {
 private:
-    GeneralStop<T>& stopIteration;
+    GeneralStop<T>* stopIteration;
     Point<T> nowPoint;
     std::vector<Point<T>> pathway;
 protected:
     CubicArea<T> area;
-    GeneralFunction<T>& f;
+    GeneralFunction<T>* f;
     virtual Point<T> NextPoint(const Point<T>& point) = 0;
     virtual void SetStart(const Point<T>& startPoint) = 0;
+    void SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration);
 public:
     /// @brief Constructor of a optimization.
     /// @param[in] _f Function for optimization.
@@ -98,7 +101,7 @@ public:
     void DoOptimize(const Point<T>& start);
 
     inline const std::vector<Point<T>> getPathway() const { return pathway; }
-    inline const T getValueLastPoint() const { return f.Value(pathway.back()); }
+    inline const T getValueLastPoint() const { return f->Value(pathway.back()); }
 
     /// @brief Virtual destructor.
     virtual ~Optimization() {}
@@ -106,7 +109,7 @@ public:
 
 template <typename T>
 Optimization<T>::Optimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration)
-    : stopIteration(_stopIteration), f(_f)
+    : stopIteration(&_stopIteration), f(&_f)
 {
 
 }
@@ -121,13 +124,20 @@ void Optimization<T>::SetArea(const Point<T>& _min, const Point<T>& _max)
 }
 
 template <typename T>
+void Optimization<T>::SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration)
+{
+    f = &_f;
+    stopIteration = &_stopIteration;
+}
+
+template <typename T>
 void Optimization<T>::DoOptimize(const Point<T>& start)
 {
     nowPoint = start;
     SetStart(start);
     pathway.push_back(nowPoint);
 
-    while (stopIteration.condition(pathway))
+    while (stopIteration->condition(pathway))
     {
         nowPoint = NextPoint(nowPoint);
         pathway.push_back(nowPoint);

@@ -27,15 +27,17 @@ int main()
 
 #ifdef DEBUG_DO
     AbsStop<double> stoper(*F[5], 100, 0.001);
+    stoper.SetParam(*F[5], 100, 0.001);
     DetermOptimization<double> MyDetOpt(*F[5], stoper, 1e-6, 1e-2);
 
     MyDetOpt.SetArea(Point<double>({-1, -1, -1}), Point<double>({1, 1, 1}));
+    MyDetOpt.SetParam(*F[5], stoper, 1e-6, 1e-2);
     MyDetOpt.DoOptimize(Point<double>({0.5, 0.5, 0.5}));
 
     std::cout << MyDetOpt.getValueLastPoint() << std::endl;
     std::cout << MyDetOpt.getPathway().back() << std::endl;
 
-    test();
+    //test();
 #else
     CursesOptim MyCO(f);
 

@@ -1,13 +1,15 @@
 #include <chrono>
-#include "DiffStoper.h"
-#include "OptMethod.h"
 #include "CursesOptim.h"
 
 #define EPSILON 1e-6;
 #define formatT "%f"
 
 CursesOptim::CursesOptim(std::vector<FunctionData>& _f) : f(_f),
-                                                          generator(std::chrono::system_clock::now().time_since_epoch().count())
+                                                          generator(std::chrono::system_clock::now().time_since_epoch().count()),
+                                                          numStop(),
+                                                          absStop(_f[1].f),
+                                                          determOptimization(_f[1].f, numStop, epsilon, epsilonStep),
+                                                          stochastOptimization(_f[1].f, numStop, prob, delta)
 {
     int raw, col;
 
@@ -315,23 +317,32 @@ void CursesOptim::main_loop()
             MyMenuParam.f = &f[MyMenuParam.numF].f;
 
             if (MyMenuParam.numStoper == 0)
-                MyMenuParam.stoper = new NumStop<T>(MyMenuParam.numIter);
+            {
+                numStop.SetParam(MyMenuParam.numIter);
+                MyMenuParam.stoper = &numStop;
+            }
             if (MyMenuParam.numStoper == 1)
-                MyMenuParam.stoper = new AbsStop<T>(*MyMenuParam.f, MyMenuParam.numIter, MyMenuParam.epsilon);
+            {
+                absStop.SetParam(*MyMenuParam.f, MyMenuParam.numIter, MyMenuParam.epsilon);
+                MyMenuParam.stoper = &absStop;
+            }
 
             if (MyMenuParam.numMethod == 0)
-                MyMenuParam.Opt = new DetermOptimization<T>(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.epsilon, MyMenuParam.epsilonStep);
+            {
+                determOptimization.SetParam(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.epsilon, MyMenuParam.epsilonStep);
+                MyMenuParam.Opt = &determOptimization;
+            }
             if (MyMenuParam.numMethod == 1)
-                MyMenuParam.Opt = new StochastOptimization<T>(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.prob, MyMenuParam.delta, MyMenuParam.seed, MyMenuParam.alpha);
- 
+            {
+                stochastOptimization.SetParam(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.prob, MyMenuParam.delta, MyMenuParam.seed, MyMenuParam.alpha);
+                MyMenuParam.Opt = &stochastOptimization;
+            }
+
             MyMenuParam.Opt->SetArea(MyMenuParam.minArea, MyMenuParam.maxArea);
             MyMenuParam.Opt->DoOptimize(MyMenuParam.start);
 
             PrintResult(MyResult, *MyMenuParam.Opt);
             PrintFunction(MyFunction, MyMenuParam.minArea, MyMenuParam.maxArea, MyMenuParam.Opt->getPathway().back(), *MyMenuParam.f);
-
-            delete MyMenuParam.stoper;
-            delete MyMenuParam.Opt;
 
             MyMenuParam.seed = generator();
 

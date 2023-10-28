@@ -28,6 +28,8 @@ public:
     /// @param[in] _epsilon Condition of stopping for one dimension optimization.
     /// @param[in] _epsilonStep Step width in one dimension optimization.
     DetermOptimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _epsilon, const T& _epsilonStep);
+
+    void SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _epsilon, const T& _epsilonStep);
 };
 
 template <typename T>
@@ -35,6 +37,14 @@ DetermOptimization<T>::DetermOptimization(GeneralFunction<T>& _f, GeneralStop<T>
     : Optimization<T>(_f, _stopIteration), epsilon(_epsilon), epsilonStep(_epsilonStep)
 {
 
+}
+
+template <typename T>
+void DetermOptimization<T>::SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _epsilon, const T& _epsilonStep)
+{
+    Optimization<T>::SetParam(_f, _stopIteration);
+    epsilon = _epsilon;
+    epsilonStep = _epsilonStep;
 }
 
 template <typename T>
@@ -99,7 +109,7 @@ T DetermOptimization<T>::OneDimensionalOptim(const T& argMin, const T& argMax, T
 template <typename T>
 void DetermOptimization<T>::SetStart(const Point<T>& startPoint)
 {
-    conjugateVector = -this->f.Gradient(startPoint);
+    conjugateVector = -this->f->Gradient(startPoint);
 }
 
 template <typename T>
@@ -138,20 +148,19 @@ Point<T> DetermOptimization<T>::NextPoint(const Point<T>& p)
     std::cout << std::endl << "Point: " << p.printPoint("%f") << std::endl;
     std::cout << "Conjugate Vector: " << conjugateVector.printPoint("%f") << std::endl;
 #endif
-
     OneDimensionalOptim({}, MinAlpha(p, conjugateVector), alpha, [this, &p](const T al)
     {
-        return this->f.Value(p + al * this->conjugateVector);
+        return this->f->Value(p + al * this->conjugateVector);
     });
 
     nextP = p + alpha * conjugateVector;
     
-    if (this->f.Gradient(p) * this->f.Gradient(p))
-        beta = (this->f.Gradient(nextP) * (this->f.Gradient(nextP) + (-this->f.Gradient(p)))) / (this->f.Gradient(p) * this->f.Gradient(p));
+    if (this->f->Gradient(p) * this->f->Gradient(p))
+        beta = (this->f->Gradient(nextP) * (this->f->Gradient(nextP) + (-this->f->Gradient(p)))) / (this->f->Gradient(p) * this->f->Gradient(p));
     else
         beta = 0;
 
-    conjugateVector = (-this->f.Gradient(nextP)) + beta * conjugateVector;
+    conjugateVector = (-this->f->Gradient(nextP)) + beta * conjugateVector;
 
     return nextP;
 }
@@ -186,6 +195,9 @@ public:
     /// @param[in] _alpha Сoefficient of narrowing of the delta neighborhood.
     StochastOptimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _probability, const T& _delta,
                          size_t _seed = 0, const T& _alpha = static_cast<T>(1));
+
+    void SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _probability, const T& _delta,
+                  size_t _seed = 0, const T& _alpha = static_cast<T>(1));
 };
 
 template <typename T>
@@ -195,6 +207,17 @@ StochastOptimization<T>::StochastOptimization(GeneralFunction<T>& _f, GeneralSto
                                                                                distr(static_cast<T>(0), static_cast<T>(1))
 {
 
+}
+
+template <typename T>
+void StochastOptimization<T>::SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _probability, const T& _delta,
+                                       size_t _seed, const T& _alpha)
+{
+    Optimization<T>::SetParam(_f, _stopIteration);
+    delta = _delta;
+    probability = _probability;
+    alpha = _alpha;
+    generator.seed(_seed);
 }
 
 template <typename T>
@@ -237,7 +260,7 @@ Point<T> StochastOptimization<T>::NextPoint(const Point<T>& point)
     else
         NewStochPoint(nextPointHelp, this->area.minArea, this->area.maxArea);
 
-    if (this->f.Value(nextPointHelp) >= this->f.Value(point))
+    if (this->f->Value(nextPointHelp) >= this->f->Value(point))
     {
         delta = deltaStart;
 

@@ -4,7 +4,10 @@
 #include <string>
 #include <ncurses.h>
 #include <vector>
+#include <memory>
 #include "Point.h"
+#include "OptMethod.h"
+#include "DiffStoper.h"
 #include "Optimization.h"
 
 using T = double;
@@ -60,6 +63,10 @@ private:
     std::vector<WindowParam*> allWin;
     std::mt19937 generator;
     WindowParam MyWin, MyMenu, MyResult, MyFunction;
+    NumStop<T> numStop;
+    AbsStop<T> absStop;
+    DetermOptimization<T> determOptimization;
+    StochastOptimization<T> stochastOptimization;
 
     void PrintHeading(const WindowParam& wp);
 

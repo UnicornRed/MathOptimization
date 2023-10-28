@@ -11,12 +11,12 @@
 template <typename T>
 class NumStop : public GeneralStop<T>
 {
-private:
-    size_t maxStep;
 public:
     /// @brief Constructor of the Number Stopper.
     /// @param _maxStep Maximum count of a step of iteration.
-    NumStop(size_t _maxStep = 100) : maxStep(_maxStep) {};
+    NumStop(size_t _maxStep = MAXSTEP) : GeneralStop<T>(_maxStep) {};
+
+    void SetParam(size_t _maxStep = MAXSTEP);
 
     /// @brief Function of a condition for stoping.
     /// @param[in] pathway Pathway of a optimization.
@@ -25,9 +25,15 @@ public:
 };
 
 template <typename T>
+void NumStop<T>::SetParam(size_t _maxStep)
+{
+    this->maxStep = _maxStep;
+}
+
+template <typename T>
 bool NumStop<T>::condition(const std::vector<Point<T>>& pathway) const
 {
-    return pathway.size() < maxStep;
+    return pathway.size() < this->maxStep;
 }
 
 /// @brief Class of the Absolute Stopper.
@@ -37,15 +43,16 @@ class AbsStop : public GeneralStop<T>
 {
 private:
     GeneralFunction<T>& f;
-    size_t maxStep;
     T epsilon;
 public:
     /// @brief Constructor of the Absolute Stopper.
     /// @param _f Function for optimization.
     /// @param _maxStep Maximum count of a step of iteration.
     /// @param _epsilon Condition of stopping.
-    AbsStop(GeneralFunction<T>& _f, size_t _maxStep = 100, T _epsilon = 0.001)
-        : f(_f), maxStep(_maxStep), epsilon(_epsilon) {};
+    AbsStop(GeneralFunction<T>& _f, size_t _maxStep = MAXSTEP, T _epsilon = 0.001)
+        : GeneralStop<T>(_maxStep), f(_f), epsilon(_epsilon) {};
+
+    void SetParam(GeneralFunction<T>& _f, size_t _maxStep = MAXSTEP, T _epsilon = 0.001);
 
     /// @brief Function of a condition for stoping.
     /// @param[in] pathway Pathway of a optimization.
@@ -54,9 +61,17 @@ public:
 };
 
 template <typename T>
+void AbsStop<T>::SetParam(GeneralFunction<T>& _f, size_t _maxStep, T _epsilon)
+{
+    f = _f;
+    this->maxStep = _maxStep;
+    epsilon = _epsilon;
+}
+
+template <typename T>
 bool AbsStop<T>::condition(const std::vector<Point<T>>& pathway) const
 {
-    if (pathway.size() >= maxStep)
+    if (pathway.size() >= this->maxStep)
         return false;
 
     for (auto it = pathway.rbegin() + 1; it < pathway.rend(); ++it)

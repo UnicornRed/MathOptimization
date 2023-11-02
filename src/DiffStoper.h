@@ -50,7 +50,11 @@ public:
     /// @param _maxStep Maximum count of a step of iteration.
     /// @param _epsilon Condition of stopping.
     AbsStop(GeneralFunction<T>& _f, size_t _maxStep = MAXSTEP, T _epsilon = 0.001)
-        : GeneralStop<T>(_maxStep), f(_f), epsilon(_epsilon) {};
+        : GeneralStop<T>(_maxStep), f(_f), epsilon(_epsilon)
+    {
+        if (epsilon <= 0)
+            throw std::invalid_argument("Epsilon must be greater than zero.");
+    }
 
     void SetParam(GeneralFunction<T>& _f, size_t _maxStep = MAXSTEP, T _epsilon = 0.001);
 
@@ -63,6 +67,9 @@ public:
 template <typename T>
 void AbsStop<T>::SetParam(GeneralFunction<T>& _f, size_t _maxStep, T _epsilon)
 {
+    if (epsilon <= 0)
+        throw std::invalid_argument("Epsilon must be greater than zero.");
+
     f = _f;
     this->maxStep = _maxStep;
     epsilon = _epsilon;

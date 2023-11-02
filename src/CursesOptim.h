@@ -78,6 +78,8 @@ private:
 
     void PrintResult(WindowParam& Result, const Optimization<T>& Opt);
 
+    void PrintError(WindowParam& Result, const std::string& message);
+
     void PrintCondition(int y, int x, MenuParam::Cond condition, const MenuParam& MyMenuParam, const WindowParam& Menu, const char* str);
 
     void PrintOption(int y, int x, int numOption, int valueOption, const MenuParam& MyMenuParam, const WindowParam& Menu, const char* str);

@@ -39,9 +39,16 @@ int main()
 
     //test();
 #else
-    CursesOptim MyCO(f);
+    try
+    {
+        CursesOptim MyCO(f);
 
-    MyCO.main_loop();
+        MyCO.main_loop();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 #endif
 
     for (const auto& i : F)

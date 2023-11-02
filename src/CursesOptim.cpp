@@ -136,6 +136,25 @@ void CursesOptim::PrintResult(WindowParam& Result, const Optimization<T>& Opt)
     wrefresh(Result.win);
 }
 
+void CursesOptim::PrintError(WindowParam& Result, const std::string& message)
+{
+    PrintWindow(Result);
+
+    int x = 1, y = 0;
+    std::string buff = message;
+    int widthWindow = MyResult.col;
+
+    mvwprintw(Result.win, ++y, x, "Error!");
+
+    while (buff.length() > 0)
+    {
+        mvwprintw(Result.win, ++y, x, "%-.*s", widthWindow, buff.substr(0, widthWindow).c_str());
+        buff = buff.substr(buff.length() < static_cast<size_t>(widthWindow) ? buff.length() : widthWindow);
+    }
+
+    wrefresh(Result.win);
+}
+
 void CursesOptim::PrintCondition(int y, int x, MenuParam::Cond condition, const MenuParam& MyMenuParam, const WindowParam& Menu, const char* str)
 {
     if (MyMenuParam.condition == condition && !MyMenuParam.choose)
@@ -314,37 +333,45 @@ void CursesOptim::main_loop()
 
             break;
         case 'r':
-            MyMenuParam.f = &f[MyMenuParam.numF].f;
-
-            if (MyMenuParam.numStoper == 0)
+            try
             {
-                numStop.SetParam(MyMenuParam.numIter);
-                MyMenuParam.stoper = &numStop;
+                MyMenuParam.f = &f[MyMenuParam.numF].f;
+
+                if (MyMenuParam.numStoper == 0)
+                {
+                    numStop.SetParam(MyMenuParam.numIter);
+                    MyMenuParam.stoper = &numStop;
+                }
+                if (MyMenuParam.numStoper == 1)
+                {
+                    absStop.SetParam(*MyMenuParam.f, MyMenuParam.numIter, MyMenuParam.epsilon);
+                    MyMenuParam.stoper = &absStop;
+                }
+
+                if (MyMenuParam.numMethod == 0)
+                {
+                    determOptimization.SetParam(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.epsilon, MyMenuParam.epsilonStep);
+                    MyMenuParam.Opt = &determOptimization;
+                }
+                if (MyMenuParam.numMethod == 1)
+                {
+                    stochastOptimization.SetParam(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.prob, MyMenuParam.delta, MyMenuParam.seed, MyMenuParam.alpha);
+                    MyMenuParam.Opt = &stochastOptimization;
+                }
+
+                MyMenuParam.Opt->SetArea(MyMenuParam.minArea, MyMenuParam.maxArea);
+                MyMenuParam.Opt->DoOptimize(MyMenuParam.start);
+
+                PrintResult(MyResult, *MyMenuParam.Opt);
+                PrintFunction(MyFunction, MyMenuParam.minArea, MyMenuParam.maxArea, MyMenuParam.Opt->getPathway().back(), *MyMenuParam.f);
+
+                MyMenuParam.seed = generator();
             }
-            if (MyMenuParam.numStoper == 1)
+            catch(const std::exception& e)
             {
-                absStop.SetParam(*MyMenuParam.f, MyMenuParam.numIter, MyMenuParam.epsilon);
-                MyMenuParam.stoper = &absStop;
+                PrintError(MyResult, e.what());
+                PrintWindow(MyFunction);
             }
-
-            if (MyMenuParam.numMethod == 0)
-            {
-                determOptimization.SetParam(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.epsilon, MyMenuParam.epsilonStep);
-                MyMenuParam.Opt = &determOptimization;
-            }
-            if (MyMenuParam.numMethod == 1)
-            {
-                stochastOptimization.SetParam(*MyMenuParam.f, *MyMenuParam.stoper, MyMenuParam.prob, MyMenuParam.delta, MyMenuParam.seed, MyMenuParam.alpha);
-                MyMenuParam.Opt = &stochastOptimization;
-            }
-
-            MyMenuParam.Opt->SetArea(MyMenuParam.minArea, MyMenuParam.maxArea);
-            MyMenuParam.Opt->DoOptimize(MyMenuParam.start);
-
-            PrintResult(MyResult, *MyMenuParam.Opt);
-            PrintFunction(MyFunction, MyMenuParam.minArea, MyMenuParam.maxArea, MyMenuParam.Opt->getPathway().back(), *MyMenuParam.f);
-
-            MyMenuParam.seed = generator();
 
             break;
         case 'q':

@@ -16,11 +16,25 @@ private:
     T epsilonStep;
     Point<T> conjugateVector;
 
+    /// @brief One dimensional optimization.
+    /// @param argMin Left border.
+    /// @param argMax Right border.
+    /// @param res Value of minimum.
+    /// @param oneF Function.
+    /// @return Point of minimum.
     T OneDimensionalOptim(const T& argMin, const T& argMax, T& res, std::function<T(const T&)> oneF);
+
+    /// @brief The alpha of the intersection of the boundary and the vector.
+    /// @param point Start point.
+    /// @param conjugateVector Vector.
+    /// @return Min alpha.
     T MinAlpha(const Point<T>& point, const Point<T>& conjugateVector);
 protected:
     Point<T> NextPoint(const Point<T>& point) override;
     void SetStart(const Point<T>& startPoint) override;
+
+    /// @brief It checked correct of field.
+    void CorrectField() override;
 public:
     /// @brief Constructor of optimization of the Conjugate Vector Method.
     /// @param[in] _f Function for optimization.
@@ -33,10 +47,20 @@ public:
 };
 
 template <typename T>
+void DetermOptimization<T>::CorrectField()
+{
+    if (epsilon <= 0)
+        throw std::invalid_argument("Epsilon must be greater than zero.");
+
+    if (epsilonStep <= 0)
+        throw std::invalid_argument("Step must be greater than zero.");
+}
+
+template <typename T>
 DetermOptimization<T>::DetermOptimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _epsilon, const T& _epsilonStep)
     : Optimization<T>(_f, _stopIteration), epsilon(_epsilon), epsilonStep(_epsilonStep)
 {
-
+    CorrectField();
 }
 
 template <typename T>
@@ -45,6 +69,8 @@ void DetermOptimization<T>::SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _st
     Optimization<T>::SetParam(_f, _stopIteration);
     epsilon = _epsilon;
     epsilonStep = _epsilonStep;
+
+    CorrectField();
 }
 
 template <typename T>
@@ -180,11 +206,22 @@ private:
     std::uniform_real_distribution<T> distr;
     CubicArea<T> sphereArea;
 
+    /// @brief Generates new point in the area.
+    /// @param nextPointHelp Point.
+    /// @param start Minimum of area.
+    /// @param end Maximum of area.
     void NewStochPoint(Point<T>& nextPointHelp, const Point<T>& start, const Point<T>& end);
+
+    /// @brief Intersection of two parallelepiped areas.
+    /// @param _sphereArea Area 1. The result will be recorded here.
+    /// @param _area Area 2.
     void IntersectionArea(CubicArea<T>& _sphereArea, const CubicArea<T>& _area);
 protected:
     Point<T> NextPoint(const Point<T>& point) override;
     void SetStart(const Point<T>& startPoint) override;
+
+    /// @brief It checked correct of field.
+    void CorrectField() override;
 public:
     /// @brief Constructor of optimization of the Conjugate Vector Method.
     /// @param[in] _f Function for optimization.
@@ -201,12 +238,25 @@ public:
 };
 
 template <typename T>
+void StochastOptimization<T>::CorrectField()
+{
+    if (delta <= 0)
+        throw std::invalid_argument("Delta must be greater than zero.");
+
+    if (alpha <= 0 || alpha > 1)
+        throw std::invalid_argument("Alpha must be greater than zero and less or equal than 1.");
+
+    if (probability <= 0 || probability > 1)
+        throw std::invalid_argument("Probability must be greater than zero and less or equal than 1.");
+}
+
+template <typename T>
 StochastOptimization<T>::StochastOptimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration, const T& _probability, const T& _delta,
                                               size_t _seed, const T& _alpha) : Optimization<T>(_f, _stopIteration), delta(_delta), deltaStart(_delta),
                                                                                probability(_probability), alpha(_alpha), generator(_seed),
                                                                                distr(static_cast<T>(0), static_cast<T>(1))
 {
-
+    CorrectField();
 }
 
 template <typename T>
@@ -218,6 +268,8 @@ void StochastOptimization<T>::SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _
     probability = _probability;
     alpha = _alpha;
     generator.seed(_seed);
+
+    CorrectField();
 }
 
 template <typename T>

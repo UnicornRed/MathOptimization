@@ -82,9 +82,16 @@ private:
 protected:
     CubicArea<T> area;
     GeneralFunction<T>* f;
+
+    /// @brief Takes next point of the pathway.
+    /// @param point Last point.
+    /// @return Next point.
     virtual Point<T> NextPoint(const Point<T>& point) = 0;
     virtual void SetStart(const Point<T>& startPoint) = 0;
     void SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _stopIteration);
+
+    /// @brief It checked correct of field.
+    virtual void CorrectField() = 0;
 public:
     /// @brief Constructor of a optimization.
     /// @param[in] _f Function for optimization.
@@ -117,6 +124,13 @@ Optimization<T>::Optimization(GeneralFunction<T>& _f, GeneralStop<T>& _stopItera
 template <typename T>
 void Optimization<T>::SetArea(const Point<T>& _min, const Point<T>& _max)
 {
+    if (_min.size() != _max.size())
+        throw std::invalid_argument("Size of points not equal.");
+
+    for (size_t i{}; i < _min.size(); ++i)
+        if (_min[i] > _max[i])
+            throw std::invalid_argument("The minimum point must be less than the maximum point in all coordinates.");
+
     area.minArea = _min;
     area.maxArea = _max;
 
@@ -133,6 +147,13 @@ void Optimization<T>::SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _stopIter
 template <typename T>
 void Optimization<T>::DoOptimize(const Point<T>& start)
 {
+    if (start.size() != area.minArea.size())
+        throw std::invalid_argument("Size of start point is not equal size of area.");
+
+    for (size_t i{}; i < start.size(); ++i)
+        if (start[i] > area.maxArea[i] || start[i] < area.minArea[i])
+            throw std::invalid_argument("The start point must be less than the maximum point and greater than the minimum point in all coordinates.");
+
     nowPoint = start;
     SetStart(start);
     pathway.push_back(nowPoint);

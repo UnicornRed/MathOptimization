@@ -30,9 +30,21 @@ public:
 
     size_t size() const { return x.size(); }
 
-    T& operator[](size_t i) { return x[i]; }
+    T& operator[](size_t i)
+    {
+        if (i >= size())
+            throw std::out_of_range("Out of range of Point.");
 
-    const T& operator[](size_t i) const { return x[i]; }
+        return x[i];
+    }
+
+    const T& operator[](size_t i) const
+    {
+        if (i >= size())
+            throw std::out_of_range("Out of range of Point.");
+
+        return x[i];
+    }
 
     Point<T, Container> operator-() const 
     {
@@ -123,7 +135,7 @@ std::string Point<T, Container>::printPoint(std::string format) const
 template <typename T, class Container>
 std::ostream& operator<<(std::ostream& out, const Point<T, Container>& p)
 {
-    for_each(p.begin(), p.end(), [&out, &p](const auto& a)
+    for_each(p.begin(), p.end(), [&out](const auto& a)
     {
         out << a << " ";
     });

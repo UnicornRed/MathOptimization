@@ -1,10 +1,8 @@
 #include <iostream>
-#include "CursesOptim.h"
 #include "MathFunc.h"
+#include "CursesOptim.h"
 
-#ifdef DEBUG_DO
-#include "DiffStoper.h"
-#include "OptMethod.h"
+#ifdef GUI
 #include "GUI_Optim.h"
 #endif
 
@@ -25,19 +23,8 @@ int main()
                                    {"(1-x)^2+(x-y)^2+(y-z)^2+(z-w)^2", *F[6], Point<double>({0, 0, 0, 0}),
                                     Point<double>({2, 2, 2, 2}), Point<double>({0.5, 0.5, 0.5, 0.5})}};
 
-#ifdef DEBUG_DO
-    AbsStop<double> stoper(*F[5], 100, 0.001);
-    stoper.SetParam(*F[5], 100, 0.001);
-    DetermOptimization<double> MyDetOpt(*F[5], stoper, 1e-6, 1e-2);
-
-    MyDetOpt.SetArea(Point<double>({-1, -1, -1}), Point<double>({1, 1, 1}));
-    MyDetOpt.SetParam(*F[5], stoper, 1e-6, 1e-2);
-    MyDetOpt.DoOptimize(Point<double>({0.5, 0.5, 0.5}));
-
-    std::cout << MyDetOpt.getValueLastPoint() << std::endl;
-    std::cout << MyDetOpt.getPathway().back() << std::endl;
-
-    //test();
+#ifdef GUI
+    test();
 #else
     try
     {

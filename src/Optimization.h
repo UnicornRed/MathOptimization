@@ -1,6 +1,6 @@
 /// @mainpage Optimization Method
 /// @author Oleynik Michael
-/// @date 03.05.2023
+/// @date 02.11.2023
 
 /// @file
 /// @brief Abstract classes for optimization methods, functions and stoppers.

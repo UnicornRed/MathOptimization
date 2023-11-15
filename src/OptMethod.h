@@ -273,7 +273,7 @@ void StochastOptimization<T>::SetParam(GeneralFunction<T>& _f, GeneralStop<T>& _
 }
 
 template <typename T>
-void StochastOptimization<T>::SetStart(const Point<T>& startPoint)
+void StochastOptimization<T>::SetStart(const Point<T>&)
 {
 
 }

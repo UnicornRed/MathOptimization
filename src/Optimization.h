@@ -58,6 +58,18 @@ public:
     virtual ~GeneralFunction() {}
 };
 
+/// @brief Struct for functions.
+/// @tparam T Typename for a value of a function.
+template <typename T>
+struct FunctionData
+{
+    std::string name;
+    GeneralFunction<T>& f;
+    Point<T> minArea;
+    Point<T> maxArea;
+    Point<T> start;
+};
+
 /// @brief Struct of a area for optimization.
 /// @tparam T Typename of a point's coordinate.
 template <typename T>

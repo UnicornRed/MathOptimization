@@ -55,12 +55,16 @@ OBJECTS_DIR   = obj/
 SOURCES       = src/CursesOptim.cpp \
 		src/MathFunc.cpp \
 		src/Optim.cpp \
-		src/gui_optim.cpp moc_gui_optim.cpp
+		src/gui_optim.cpp \
+		src/settings.cpp moc_gui_optim.cpp \
+		moc_settings.cpp
 OBJECTS       = obj/CursesOptim.o \
 		obj/MathFunc.o \
 		obj/Optim.o \
 		obj/gui_optim.o \
-		obj/moc_gui_optim.o
+		obj/settings.o \
+		obj/moc_gui_optim.o \
+		obj/moc_settings.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -145,10 +149,12 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		src/OptMethod.h \
 		src/Optimization.h \
 		src/Point.h \
-		src/gui_optim.h src/CursesOptim.cpp \
+		src/gui_optim.h \
+		src/settings.h src/CursesOptim.cpp \
 		src/MathFunc.cpp \
 		src/Optim.cpp \
-		src/gui_optim.cpp
+		src/gui_optim.cpp \
+		src/settings.cpp
 QMAKE_TARGET  = Optim
 DESTDIR       = 
 TARGET        = Optim
@@ -157,7 +163,7 @@ TARGET        = Optim
 first: all
 ####### Build rules
 
-Optim: ui_gui_optim.h $(OBJECTS)  
+Optim: ui_gui_optim.h ui_settings.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: Optim.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -334,9 +340,9 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents src/CursesOptim.h src/DiffStoper.h src/MathFunc.h src/OptMethod.h src/Optimization.h src/Point.h src/gui_optim.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/CursesOptim.cpp src/MathFunc.cpp src/Optim.cpp src/gui_optim.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents src/gui_optim.ui $(DISTDIR)/
+	$(COPY_FILE) --parents src/CursesOptim.h src/DiffStoper.h src/MathFunc.h src/OptMethod.h src/Optimization.h src/Point.h src/gui_optim.h src/settings.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/CursesOptim.cpp src/MathFunc.cpp src/Optim.cpp src/gui_optim.cpp src/settings.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/gui_optim.ui src/settings.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -368,24 +374,33 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -D GUI -g -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_gui_optim.cpp
+compiler_moc_header_make_all: moc_gui_optim.cpp moc_settings.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_gui_optim.cpp
+	-$(DEL_FILE) moc_gui_optim.cpp moc_settings.cpp
 moc_gui_optim.cpp: src/gui_optim.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/unicornred/All/study_materials/ПрогРешВерЗадач/Task1/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/unicornred/All/study_materials/ПрогРешВерЗадач/Task1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include src/gui_optim.h -o moc_gui_optim.cpp
 
+moc_settings.cpp: src/settings.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/unicornred/All/study_materials/ПрогРешВерЗадач/Task1/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/unicornred/All/study_materials/ПрогРешВерЗадач/Task1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include src/settings.h -o moc_settings.cpp
+
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_gui_optim.h
+compiler_uic_make_all: ui_gui_optim.h ui_settings.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_gui_optim.h
+	-$(DEL_FILE) ui_gui_optim.h ui_settings.h
 ui_gui_optim.h: src/gui_optim.ui \
 		/usr/lib/qt5/bin/uic
 	/usr/lib/qt5/bin/uic src/gui_optim.ui -o ui_gui_optim.h
+
+ui_settings.h: src/settings.ui \
+		/usr/lib/qt5/bin/uic
+	/usr/lib/qt5/bin/uic src/settings.ui -o ui_settings.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -419,11 +434,19 @@ obj/Optim.o: src/Optim.cpp src/MathFunc.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Optim.o src/Optim.cpp
 
 obj/gui_optim.o: src/gui_optim.cpp src/gui_optim.h \
-		ui_gui_optim.h
+		ui_gui_optim.h \
+		src/settings.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/gui_optim.o src/gui_optim.cpp
+
+obj/settings.o: src/settings.cpp src/settings.h \
+		ui_settings.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/settings.o src/settings.cpp
 
 obj/moc_gui_optim.o: moc_gui_optim.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_gui_optim.o moc_gui_optim.cpp
+
+obj/moc_settings.o: moc_settings.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_settings.o moc_settings.cpp
 
 ####### Install
 

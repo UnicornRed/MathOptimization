@@ -15,6 +15,11 @@ public:
     explicit GUI_Optim(QWidget *parent = nullptr);
     ~GUI_Optim();
 
+private slots:
+    void on_actionSettings_triggered();
+
+    void on_actionExit_triggered();
+
 private:
     Ui::GUI_Optim *ui;
 };

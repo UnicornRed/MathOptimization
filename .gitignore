@@ -18,3 +18,5 @@ Optim.pro.user
 moc_gui_optim.cpp
 moc_predefs.h
 ui_gui_optim.h
+moc_settings.cpp
+ui_settings.h

@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     std::vector<FunctionData<double>> f = {{"0", *F[0], Point<double>({-1, -1}), Point<double>({1, 1}), Point<double>({0.5, 0.5})},
                                            {"3x^2+0.5y^2+2", *F[1], Point<double>({-1, -1}), Point<double>({1, 1}), Point<double>({0.5, 0.5})},
                                            {"Rosenbrock", *F[2], Point<double>({-1, -0.1}), Point<double>({1.1, 1.1}), Point<double>({-0.5, 0.5})},
-                                           {"sin(pi*sin(x)+pi*sin(y))", *F[3], Point<double>({0, 0}), Point<double>({5, 5}), Point<double>({0.5, 0.5})},
+                                           {"\\sin(\\pi*sin(x)+\\pi*\\sin(y))", *F[3], Point<double>({0, 0}), Point<double>({5, 5}), Point<double>({0.5, 0.5})},
                                            {"Himmelblau", *F[4], Point<double>({-5, -5}), Point<double>({5, 5}), Point<double>({0, 0})},
                                            {"3x^2+0.5y^2+z^2+0.3xy+z+4y+2", *F[5],Point<double>({-4, -4, -4}),
                                             Point<double>({1, 1, 1}), Point<double>({0.5, 0.5, 0.5})},

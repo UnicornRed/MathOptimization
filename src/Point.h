@@ -58,8 +58,6 @@ public:
         return res;
     }
 
-    std::string printPoint(std::string format) const;
-
     template <typename V, class Container_>
     friend Point<V, Container_> operator+(const Point<V, Container_>& p1, const Point<V, Container_>& p2);
     template <typename V, class Container_>
@@ -115,21 +113,6 @@ template <typename T, class Container>
 Point<T, Container> operator*(const Point<T, Container>& p, const T& alpha)
 {
     return alpha * p;
-}
-
-template <typename T, class Container>
-std::string Point<T, Container>::printPoint(std::string format) const
-{
-    char help[100];
-    std::string res = "";
-
-    for_each(begin(), end(), [&help, &res, format](const auto& a)
-    {
-        sprintf(help, format.c_str(), a);
-        res += std::string(help) + " ";
-    });
-
-    return res;
 }
 
 template <typename T, class Container>

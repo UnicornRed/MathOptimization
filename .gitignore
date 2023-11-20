@@ -1,12 +1,10 @@
 /.vscode
 /Optim.d
 /Optimization.d
-/obj
 Optim
 Point.d
 Optim
 CursesOptim.d
-.gitignore
 MathFunc.d
 GUI_Optim.d
 .qmake.stash
@@ -14,3 +12,9 @@ GUI_Optim.d
 Makefile.back
 Optim.pro
 doxygen
+moc_gui_optim.cpp
+moc_predefs.h
+moc_settings.cpp
+Optim.pro.user
+ui_gui_optim.h
+ui_settings.h

@@ -1,4 +1,5 @@
 #include <chrono>
+#include <sstream>
 #include "CursesOptim.h"
 
 #define EPSILON 1e-6;
@@ -128,8 +129,10 @@ void CursesOptim::PrintResult(WindowParam& Result, const Optimization<T>& Opt)
     PrintWindow(Result);
 
     int x = 1, y = 1;
+    std::stringstream ss;
+    ss << Opt.getPathway().back();
 
-    mvwprintw(Result.win, y, x, "Point of min: %-.30s", Opt.getPathway().back().printPoint("%8.5f").c_str());
+    mvwprintw(Result.win, y, x, "Point of min: %-.30s", ss.str().c_str());
     mvwprintw(Result.win, ++y, x, "Value in point: " formatT, Opt.getValueLastPoint());
     mvwprintw(Result.win, ++y, x, "Count of iterations: %lu", Opt.getPathway().size());
 
@@ -174,7 +177,7 @@ void CursesOptim::PrintOption(int y, int x, int numOption, int valueOption, cons
 void CursesOptim::ScanSizeTOption(int y, int x, int numOption, int valueOption, size_t& sizeTParam, const WindowParam& Menu, bool newparam)
 {
     if (valueOption == numOption && newparam)
-        mvwscanw(Menu.win, y, x + 10, "%lu", &sizeTParam);
+        mvwscanw(Menu.win, y, x + 10, static_cast<const char*>("%lu"), &sizeTParam);
     else
         mvwprintw(Menu.win, y, x + 10, "%lu", sizeTParam);
 }
@@ -182,7 +185,7 @@ void CursesOptim::ScanSizeTOption(int y, int x, int numOption, int valueOption, 
 void CursesOptim::ScanDoubleOption(int y, int x, int numOption, int valueOption, T& doubleParam, const WindowParam& Menu, bool newparam)
 {
     if (valueOption == numOption && newparam)
-        mvwscanw(Menu.win, y, x + 10, "%lf", &doubleParam);
+        mvwscanw(Menu.win, y, x + 10, static_cast<const char*>("%lf"), &doubleParam);
     else
         mvwprintw(Menu.win, y, x + 10, "%-6g", doubleParam);
 }
@@ -191,7 +194,7 @@ void CursesOptim::ScanPointOption(int y, int x, int numOption, int valueOption, 
 {
     if (valueOption == numOption && newparam)
         for (size_t i{}; i < pointParam.size(); ++i)
-            mvwscanw(Menu.win, y, x + 10 + i * 8, "%lf", &pointParam[i]);
+            mvwscanw(Menu.win, y, x + 10 + i * 8, static_cast<const char*>("%lf"), &pointParam[i]);
     else
         for (size_t i{}; i < pointParam.size(); ++i)
             mvwprintw(Menu.win, y, x + 10 + i * 8, "%6.4f ", pointParam[i]);

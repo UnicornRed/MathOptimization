@@ -171,8 +171,8 @@ Point<T> DetermOptimization<T>::NextPoint(const Point<T>& p)
     Point<T> nextP;
 
 #ifdef DEBUG_DO
-    std::cout << std::endl << "Point: " << p.printPoint("%f") << std::endl;
-    std::cout << "Conjugate Vector: " << conjugateVector.printPoint("%f") << std::endl;
+    std::cout << std::endl << "Point: " << p << std::endl;
+    std::cout << "Conjugate Vector: " << conjugateVector << std::endl;
 #endif
     OneDimensionalOptim({}, MinAlpha(p, conjugateVector), alpha, [this, &p](const T al)
     {

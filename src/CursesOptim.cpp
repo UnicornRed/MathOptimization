@@ -174,18 +174,24 @@ void CursesOptim::PrintOption(int y, int x, int numOption, int valueOption, cons
     mvwprintw(Menu.win, y, x + 2, "%.30s", str);
 }
 
+char format_lu[] = "%lu";
+
+#include <string.h>
+
 void CursesOptim::ScanSizeTOption(int y, int x, int numOption, int valueOption, size_t& sizeTParam, const WindowParam& Menu, bool newparam)
 {
     if (valueOption == numOption && newparam)
-        mvwscanw(Menu.win, y, x + 10, static_cast<const char*>("%lu"), &sizeTParam);
+        mvwscanw(Menu.win, y, x + 10, format_lu, &sizeTParam);
     else
         mvwprintw(Menu.win, y, x + 10, "%lu", sizeTParam);
 }
 
+char format_lf[] = "%lf";
+
 void CursesOptim::ScanDoubleOption(int y, int x, int numOption, int valueOption, T& doubleParam, const WindowParam& Menu, bool newparam)
 {
     if (valueOption == numOption && newparam)
-        mvwscanw(Menu.win, y, x + 10, static_cast<const char*>("%lf"), &doubleParam);
+        mvwscanw(Menu.win, y, x + 10, format_lf, &doubleParam);
     else
         mvwprintw(Menu.win, y, x + 10, "%-6g", doubleParam);
 }
@@ -194,7 +200,7 @@ void CursesOptim::ScanPointOption(int y, int x, int numOption, int valueOption, 
 {
     if (valueOption == numOption && newparam)
         for (size_t i{}; i < pointParam.size(); ++i)
-            mvwscanw(Menu.win, y, x + 10 + i * 8, static_cast<const char*>("%lf"), &pointParam[i]);
+            mvwscanw(Menu.win, y, x + 10 + i * 8, format_lf, &pointParam[i]);
     else
         for (size_t i{}; i < pointParam.size(); ++i)
             mvwprintw(Menu.win, y, x + 10 + i * 8, "%6.4f ", pointParam[i]);

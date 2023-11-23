@@ -16,8 +16,7 @@
 #include <random>
 #include "Point.h"
 
-#define PHI (1 + std::sqrt(5) / 2)
-#define MAXSTEP 100
+static const size_t MAXSTEP = 100;
 
 /// @brief Abstract class for stoppers.
 /// @tparam T Typename for a value of a function.

@@ -82,15 +82,8 @@ bool AbsStop<T>::condition(const std::vector<Point<T>>& pathway) const
         return false;
 
     for (auto it = pathway.rbegin() + 1; it < pathway.rend(); ++it)
-    {
         if (f.Value(pathway.back()) < f.Value(*it))
-        {
-            if (f.Value(*it) - f.Value(pathway.back()) < epsilon)
-                return false;
-            else
-                return true;
-        }
-    }
+            return !(f.Value(*it) - f.Value(pathway.back()) < epsilon);
     
     return true;
 }

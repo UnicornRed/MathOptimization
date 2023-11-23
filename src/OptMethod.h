@@ -15,6 +15,7 @@ private:
     T epsilon;
     T epsilonStep;
     Point<T> conjugateVector;
+    static constexpr T PHI = static_cast<T>(1 + std::sqrt(5) / 2);
 
     /// @brief One dimensional optimization.
     /// @param argMin Left border.

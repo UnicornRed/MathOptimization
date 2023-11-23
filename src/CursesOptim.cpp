@@ -2,8 +2,7 @@
 #include <sstream>
 #include "CursesOptim.h"
 
-#define EPSILON 1e-6;
-#define formatT "%f"
+static const T EPSILON = 1e-6;
 
 CursesOptim::CursesOptim(std::vector<FunctionData>& _f) : f(_f),
                                                           generator(std::chrono::system_clock::now().time_since_epoch().count()),
@@ -133,7 +132,7 @@ void CursesOptim::PrintResult(WindowParam& Result, const Optimization<T>& Opt)
     ss << Opt.getPathway().back();
 
     mvwprintw(Result.win, y, x, "Point of min: %-.30s", ss.str().c_str());
-    mvwprintw(Result.win, ++y, x, "Value in point: " formatT, Opt.getValueLastPoint());
+    mvwprintw(Result.win, ++y, x, "Value in point: %f", Opt.getValueLastPoint());
     mvwprintw(Result.win, ++y, x, "Count of iterations: %lu", Opt.getPathway().size());
 
     wrefresh(Result.win);

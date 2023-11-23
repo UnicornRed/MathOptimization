@@ -16,7 +16,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -D GUI -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -D GUI_ -g -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 INCPATH       = -I. -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /lib/qt5/bin/qmake
 DEL_FILE      = rm -f
@@ -52,14 +52,12 @@ OBJECTS_DIR   = obj/
 
 ####### Files
 
-SOURCES       = src/CursesOptim.cpp \
-		src/MathFunc.cpp \
+SOURCES       = src/MathFunc.cpp \
 		src/Optim.cpp \
 		src/gui_optim.cpp \
 		src/settings.cpp moc_gui_optim.cpp \
 		moc_settings.cpp
-OBJECTS       = obj/CursesOptim.o \
-		obj/MathFunc.o \
+OBJECTS       = obj/MathFunc.o \
 		obj/Optim.o \
 		obj/gui_optim.o \
 		obj/settings.o \
@@ -143,15 +141,13 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		Optim.pro src/CursesOptim.h \
-		src/DiffStoper.h \
+		Optim.pro src/DiffStoper.h \
 		src/MathFunc.h \
 		src/OptMethod.h \
 		src/Optimization.h \
 		src/Point.h \
 		src/gui_optim.h \
-		src/settings.h src/CursesOptim.cpp \
-		src/MathFunc.cpp \
+		src/settings.h src/MathFunc.cpp \
 		src/Optim.cpp \
 		src/gui_optim.cpp \
 		src/settings.cpp
@@ -340,8 +336,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents src/CursesOptim.h src/DiffStoper.h src/MathFunc.h src/OptMethod.h src/Optimization.h src/Point.h src/gui_optim.h src/settings.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/CursesOptim.cpp src/MathFunc.cpp src/Optim.cpp src/gui_optim.cpp src/settings.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/DiffStoper.h src/MathFunc.h src/OptMethod.h src/Optimization.h src/Point.h src/gui_optim.h src/settings.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/MathFunc.cpp src/Optim.cpp src/gui_optim.cpp src/settings.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents src/gui_optim.ui src/settings.ui $(DISTDIR)/
 
 
@@ -372,7 +368,7 @@ compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
-	g++ -pipe -D GUI -g -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
+	g++ -pipe -D GUI_ -g -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
 compiler_moc_header_make_all: moc_gui_optim.cpp moc_settings.cpp
 compiler_moc_header_clean:
@@ -411,13 +407,6 @@ compiler_lex_clean:
 compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
-
-obj/CursesOptim.o: src/CursesOptim.cpp src/CursesOptim.h \
-		src/Point.h \
-		src/OptMethod.h \
-		src/Optimization.h \
-		src/DiffStoper.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/CursesOptim.o src/CursesOptim.cpp
 
 obj/MathFunc.o: src/MathFunc.cpp src/MathFunc.h \
 		src/Optimization.h \

@@ -4,7 +4,7 @@
 
 static const T EPSILON = 1e-6;
 
-CursesOptim::CursesOptim(std::vector<FunctionData>& _f) : f(_f),
+CursesOptim::CursesOptim(std::vector<FunctionData<T>>& _f) : f(_f),
                                                           generator(std::chrono::system_clock::now().time_since_epoch().count()),
                                                           numStop(),
                                                           absStop(_f[1].f),

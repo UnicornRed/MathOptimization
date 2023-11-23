@@ -1,12 +1,12 @@
 #include <cmath>
 #include "MathFunc.h"
 
-double F_2D::FuncNull::Value(const Point<double>& p) const
+double F_2D::FuncNull::Value(const Point<double>&) const
 {
     return 0; 
 }
 
-Point<double> F_2D::FuncNull::Gradient(const Point<double>& p) const
+Point<double> F_2D::FuncNull::Gradient(const Point<double>&) const
 {
     return Point<double>({0, 0});
 }

@@ -12,15 +12,6 @@
 
 using T = double;
 
-struct FunctionData
-{
-    std::string name;
-    GeneralFunction<T>& f;
-    Point<T> minArea;
-    Point<T> maxArea;
-    Point<T> start;
-};
-
 class CursesOptim
 {
 private:
@@ -59,7 +50,7 @@ private:
         int countF;
     } MyMenuParam;
 
-    std::vector<FunctionData> f;
+    std::vector<FunctionData<T>> f;
     std::vector<WindowParam*> allWin;
     std::mt19937 generator;
     WindowParam MyWin, MyMenu, MyResult, MyFunction;
@@ -94,7 +85,7 @@ private:
 
     void changeOptim(int deltaOption);
 public:
-    CursesOptim(std::vector<FunctionData>& f);
+    CursesOptim(std::vector<FunctionData<T>>& f);
 
     void main_loop();
 

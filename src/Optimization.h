@@ -1,6 +1,6 @@
 /// @mainpage Optimization Method
 /// @author Oleynik Michael
-/// @date 03.05.2023
+/// @date 02.11.2023
 
 /// @file
 /// @brief Abstract classes for optimization methods, functions and stoppers.
@@ -55,6 +55,18 @@ public:
 
     /// @brief Virtual destructor.
     virtual ~GeneralFunction() {}
+};
+
+/// @brief Struct for functions.
+/// @tparam T Typename for a value of a function.
+template <typename T>
+struct FunctionData
+{
+    std::string name;
+    GeneralFunction<T>& f;
+    Point<T> minArea;
+    Point<T> maxArea;
+    Point<T> start;
 };
 
 /// @brief Struct of a area for optimization.

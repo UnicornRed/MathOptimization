@@ -12,9 +12,9 @@ GUI_Optim.d
 Makefile.back
 Optim.pro
 doxygen
+Optim.pro.user
 moc_gui_optim.cpp
 moc_predefs.h
-moc_settings.cpp
-Optim.pro.user
 ui_gui_optim.h
+moc_settings.cpp
 ui_settings.h

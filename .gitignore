@@ -10,7 +10,6 @@ GUI_Optim.d
 .qmake.stash
 *.o
 Makefile.back
-Optim.pro
 doxygen
 Optim.pro.user
 moc_gui_optim.cpp

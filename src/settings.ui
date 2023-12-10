@@ -212,7 +212,7 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="page_2">
+           <widget class="QWidget" name="page_6">
             <layout class="QHBoxLayout" name="horizontalLayout_17">
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -511,7 +511,7 @@
            <property name="currentIndex">
             <number>0</number>
            </property>
-           <widget class="QWidget" name="page_1">
+           <widget class="QWidget" name="page_10">
             <layout class="QHBoxLayout" name="horizontalLayout_31">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_12">
@@ -547,7 +547,7 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="page_2">
+           <widget class="QWidget" name="page_11">
             <layout class="QHBoxLayout" name="horizontalLayout_23">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_13">
@@ -597,7 +597,7 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="page_3">
+           <widget class="QWidget" name="page_12">
             <layout class="QHBoxLayout" name="horizontalLayout_28">
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_14">
@@ -933,7 +933,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_2"/>
   <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
  </buttongroups>
 </ui>

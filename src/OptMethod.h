@@ -15,7 +15,8 @@ private:
     T epsilon;
     T epsilonStep;
     Point<T> conjugateVector;
-    static constexpr T PHI = static_cast<T>(1 + std::sqrt(5) / 2);
+    /// @brief Golden ratio. Calculate: (1 + \sqrt(5))/2.
+    static constexpr T PHI = static_cast<T>(1.6180339887);
 
     /// @brief One dimensional optimization.
     /// @param argMin Left border.

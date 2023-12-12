@@ -76,10 +76,14 @@ public:
     inline DetermOptimization<double>& GetOptimDeter() { return determOptimization; }
     inline StochastOptimization<double>& GetOptimStoch() { return stochastOptimization; }
     inline size_t GetAccuracy() const { return MyMenuParam.accuracyImg; }
+    inline void SetStartPoint(Point<double> p) { MyMenuParam.start = p; }
 
     bool GetDrawGraph() const;
 
     void SetNewSeed();
+
+signals:
+    void okButtonPress();
 
 private slots:
     void on_radioButtonMethod_2_clicked();

@@ -1,3 +1,4 @@
+#include <QObject>
 #include <QMessageBox>
 #include <fstream>
 #include "gui_optim.h"
@@ -14,8 +15,13 @@ GUI_Optim::GUI_Optim(std::vector<FunctionData<double>>& _f, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    scene = new QGraphicsScene(ui->GraphicsFunction);
+    scene = new MyGraphicsScene(ui->GraphicsFunction);
+
+    ui->GraphicsFunction->setRenderHints(QPainter::Antialiasing);
     ui->GraphicsFunction->setScene(scene);
+
+    QObject::connect(scene, &MyGraphicsScene::signalTargetCoordinate, this, &GUI_Optim::press_mouse_scene);
+    QObject::connect(&set, &Settings::okButtonPress, this, &GUI_Optim::on_actionOptimize_triggered);
     ui->statusbar->addWidget(new QLabel(copyright));
     set.setModal(true);
 }
@@ -39,9 +45,17 @@ void GUI_Optim::on_actionExit_triggered()
 
 void GUI_Optim::drawFunction()
 {
+    scene->clear();
+
+    if (set.GetMaxArea().size() != 2 || !set.GetDrawGraph())
+    {
+        drawBack = false;
+        return;
+    }
+
+    drawBack = true;
     QPen pen(QColor(200, 50, 30));
     QBrush brush(QColor(200, 50, 30));
-    scene->clear();
     scene->update(0, 0, 0, 0);
 
     int sizeRect = set.GetAccuracy();
@@ -49,7 +63,7 @@ void GUI_Optim::drawFunction()
     int height = ui->GraphicsFunction->height() / sizeRect;
     int color;
 
-    double maxValue = set.GetFunction().Value(set.GetOptim()->getPathway().back());
+    double maxValue = set.GetFunction().Value(set.GetMaxArea());
     double minValue = maxValue, value;
 
     for (int i{}; i < width + 1; ++i)
@@ -110,26 +124,20 @@ void GUI_Optim::on_actionOptimize_triggered()
 
     std::stringstream ss;
 
-    ss << set.GetOptim()->getPathway().back();
-    ui->resultPoint->setText(ss.str().c_str());
-    ss.str("");
-    ss << set.GetOptim()->getValueLastPoint();
-    ui->resultValue->setText(ss.str().c_str());
-    ss.str("");
-    ss << set.GetOptim()->getPathway().size();
-    ui->resultCount->setText(ss.str().c_str());
-    ss.str("");
+    if (set.GetOptim()->getPathway().size() > 0)
+    {
+        ss << set.GetOptim()->getPathway().back();
+        ui->resultPoint->setText(ss.str().c_str());
+        ss.str("");
+        ss << set.GetOptim()->getValueLastPoint();
+        ui->resultValue->setText(ss.str().c_str());
+        ss.str("");
+        ss << set.GetOptim()->getPathway().size();
+        ui->resultCount->setText(ss.str().c_str());
+        ss.str("");
+    }
 
-    if (set.GetMaxArea().size() != 2 || !set.GetDrawGraph())
-    {
-        scene->clear();
-        drawBack = false;
-    }
-    else
-    {
-        drawFunction();
-        drawBack = true;
-    }
+    drawFunction();
 
     set.SetNewSeed();
 }
@@ -157,6 +165,18 @@ void GUI_Optim::on_actionHelp_triggered()
         QMessageBox::about(this, "Help", ss.str().c_str());
 
         in.close();
+    }
+}
+
+void GUI_Optim::press_mouse_scene(QPointF point)
+{
+    if (set.GetMaxArea().size() == 2 && drawBack)
+    {
+        Point<double> start({(point.x() / ui->GraphicsFunction->width() + 0.5) * (set.GetMaxArea()[0] - set.GetMinArea()[0]),
+                             (-point.y() / ui->GraphicsFunction->height() + 0.5) * (set.GetMaxArea()[1] - set.GetMinArea()[1])});
+        set.SetStartPoint(start + set.GetMinArea());
+
+        on_actionOptimize_triggered();
     }
 }
 

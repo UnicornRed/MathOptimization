@@ -18,6 +18,7 @@ SOURCES += \
     src/MathFunc.cpp \
     src/Optim.cpp \
     src/gui_optim.cpp \
+    src/mygraphicsscene.cpp \
     src/settings.cpp
 
 HEADERS += \
@@ -27,6 +28,7 @@ HEADERS += \
     src/Optimization.h \
     src/Point.h \
     src/gui_optim.h \
+    src/mygraphicsscene.h \
     src/settings.h \
     src/CursesOptim.h
 

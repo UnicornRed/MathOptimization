@@ -462,7 +462,11 @@ void Settings::on_applyButton_clicked()
 void Settings::on_okButton_clicked()
 {
     if (ApplyInput())
+    {
         QWidget::close();
+
+        emit okButtonPress();
+    }
 }
 
 

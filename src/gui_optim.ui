@@ -35,7 +35,7 @@
          <enum>QAbstractScrollArea::AdjustToContents</enum>
         </property>
         <property name="interactive">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="resizeAnchor">
          <enum>QGraphicsView::AnchorViewCenter</enum>

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include "mygraphicsscene.h"
 #include "settings.h"
 
 namespace Ui {
@@ -32,11 +33,13 @@ private slots:
 
     void on_actionHelp_triggered();
 
+    void press_mouse_scene(QPointF point);
+
 private:
     void drawFunction();
 
     Ui::GUI_Optim *ui;
-    QGraphicsScene *scene;
+    MyGraphicsScene *scene;
 };
 
 #endif // GUI_OPTIM_H

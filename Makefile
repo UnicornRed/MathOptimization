@@ -55,13 +55,17 @@ OBJECTS_DIR   = obj/
 SOURCES       = src/MathFunc.cpp \
 		src/Optim.cpp \
 		src/gui_optim.cpp \
+		src/mygraphicsscene.cpp \
 		src/settings.cpp moc_gui_optim.cpp \
+		moc_mygraphicsscene.cpp \
 		moc_settings.cpp
 OBJECTS       = obj/MathFunc.o \
 		obj/Optim.o \
 		obj/gui_optim.o \
+		obj/mygraphicsscene.o \
 		obj/settings.o \
 		obj/moc_gui_optim.o \
+		obj/moc_mygraphicsscene.o \
 		obj/moc_settings.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt6/mkspecs/common/unix.conf \
@@ -135,10 +139,12 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/spec_pre.prf \
 		src/Optimization.h \
 		src/Point.h \
 		src/gui_optim.h \
+		src/mygraphicsscene.h \
 		src/settings.h \
 		src/CursesOptim.h src/MathFunc.cpp \
 		src/Optim.cpp \
 		src/gui_optim.cpp \
+		src/mygraphicsscene.cpp \
 		src/settings.cpp
 QMAKE_TARGET  = Optim
 DESTDIR       = 
@@ -307,8 +313,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents src/DiffStoper.h src/MathFunc.h src/OptMethod.h src/Optimization.h src/Point.h src/gui_optim.h src/settings.h src/CursesOptim.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/MathFunc.cpp src/Optim.cpp src/gui_optim.cpp src/settings.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/DiffStoper.h src/MathFunc.h src/OptMethod.h src/Optimization.h src/Point.h src/gui_optim.h src/mygraphicsscene.h src/settings.h src/CursesOptim.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/MathFunc.cpp src/Optim.cpp src/gui_optim.cpp src/mygraphicsscene.cpp src/settings.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents src/gui_optim.ui src/settings.ui $(DISTDIR)/
 
 
@@ -341,10 +347,11 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp
 	g++ -pipe -D GUI -g -g -std=gnu++2a -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt6/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_gui_optim.cpp moc_settings.cpp
+compiler_moc_header_make_all: moc_gui_optim.cpp moc_mygraphicsscene.cpp moc_settings.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_gui_optim.cpp moc_settings.cpp
+	-$(DEL_FILE) moc_gui_optim.cpp moc_mygraphicsscene.cpp moc_settings.cpp
 moc_gui_optim.cpp: src/gui_optim.h \
+		src/mygraphicsscene.h \
 		src/settings.h \
 		src/Optimization.h \
 		src/Point.h \
@@ -353,6 +360,11 @@ moc_gui_optim.cpp: src/gui_optim.h \
 		moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
 	/usr/lib/qt6/libexec/moc $(DEFINES) --include /home/unicornred/All/study_materials/ПрогРешВерЗадач/Task1/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -I/home/unicornred/All/study_materials/ПрогРешВерЗадач/Task1 -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include src/gui_optim.h -o moc_gui_optim.cpp
+
+moc_mygraphicsscene.cpp: src/mygraphicsscene.h \
+		moc_predefs.h \
+		/usr/lib/qt6/libexec/moc
+	/usr/lib/qt6/libexec/moc $(DEFINES) --include /home/unicornred/All/study_materials/ПрогРешВерЗадач/Task1/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -I/home/unicornred/All/study_materials/ПрогРешВерЗадач/Task1 -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include src/mygraphicsscene.h -o moc_mygraphicsscene.cpp
 
 moc_settings.cpp: src/settings.h \
 		src/Optimization.h \
@@ -397,6 +409,7 @@ obj/Optim.o: src/Optim.cpp src/MathFunc.h \
 		src/Optimization.h \
 		src/Point.h \
 		src/gui_optim.h \
+		src/mygraphicsscene.h \
 		src/settings.h \
 		src/OptMethod.h \
 		src/DiffStoper.h \
@@ -404,6 +417,7 @@ obj/Optim.o: src/Optim.cpp src/MathFunc.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Optim.o src/Optim.cpp
 
 obj/gui_optim.o: src/gui_optim.cpp src/gui_optim.h \
+		src/mygraphicsscene.h \
 		src/settings.h \
 		src/Optimization.h \
 		src/Point.h \
@@ -411,6 +425,9 @@ obj/gui_optim.o: src/gui_optim.cpp src/gui_optim.h \
 		src/DiffStoper.h \
 		ui_gui_optim.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/gui_optim.o src/gui_optim.cpp
+
+obj/mygraphicsscene.o: src/mygraphicsscene.cpp src/mygraphicsscene.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/mygraphicsscene.o src/mygraphicsscene.cpp
 
 obj/settings.o: src/settings.cpp src/settings.h \
 		src/Optimization.h \
@@ -422,6 +439,9 @@ obj/settings.o: src/settings.cpp src/settings.h \
 
 obj/moc_gui_optim.o: moc_gui_optim.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_gui_optim.o moc_gui_optim.cpp
+
+obj/moc_mygraphicsscene.o: moc_mygraphicsscene.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_mygraphicsscene.o moc_mygraphicsscene.cpp
 
 obj/moc_settings.o: moc_settings.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_settings.o moc_settings.cpp

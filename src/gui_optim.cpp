@@ -174,9 +174,17 @@ void GUI_Optim::press_mouse_scene(QPointF point)
     {
         Point<double> start({(point.x() / ui->GraphicsFunction->width() + 0.5) * (set.GetMaxArea()[0] - set.GetMinArea()[0]),
                              (-point.y() / ui->GraphicsFunction->height() + 0.5) * (set.GetMaxArea()[1] - set.GetMinArea()[1])});
-        set.SetStartPoint(start + set.GetMinArea());
 
-        on_actionOptimize_triggered();
+        start = start + set.GetMinArea();
+        std::cout << start << std::endl;
+
+        if (!(start[0] < set.GetMinArea()[0] || start[1] < set.GetMinArea()[1] ||
+              start[0] > set.GetMaxArea()[0] || start[1] > set.GetMaxArea()[1]))
+        {
+            set.SetStartPoint(start);
+
+            on_actionOptimize_triggered();
+        }
     }
 }
 

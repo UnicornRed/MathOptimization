@@ -176,7 +176,6 @@ void GUI_Optim::press_mouse_scene(QPointF point)
                              (-point.y() / ui->GraphicsFunction->height() + 0.5) * (set.GetMaxArea()[1] - set.GetMinArea()[1])});
 
         start = start + set.GetMinArea();
-        std::cout << start << std::endl;
 
         if (!(start[0] < set.GetMinArea()[0] || start[1] < set.GetMinArea()[1] ||
               start[0] > set.GetMaxArea()[0] || start[1] > set.GetMaxArea()[1]))
